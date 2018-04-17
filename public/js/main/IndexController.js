@@ -171,18 +171,17 @@ IndexController.prototype._onSocketMessage = function (data) {
     // Hint: you can use .openCursor(null, 'prev') to
     // open a cursor that goes through an index/store
     // backwards.
-    return store.openCursor(null, 'prev');
-  }).then(function (cursor) {
-    if (!cursor) return;
-    return cursor.advance(30);
-  }).then(function delCursor(cursor) {
-    if (!cursor) return;
-    cursor.delete();
-    return cursor.continue().then(delCursor);
-  }).then(function () {
-    console.log('Done cursoring: keeped the newest 30 entries');
+    store.index('by-date').openCursor(null, 'prev').then(function (cursor) {
+      return cursor.advance(30);
+    }).then(function delCursor(cursor) {
+      if (!cursor) return;
+      cursor.delete();
+      return cursor.continue().then(delCursor);
+    }).then(function () {
+      console.log('Done cursoring: keeped the newest 30 entries');
+    });
+
+
+    this._postsView.addPosts(messages);
   });
-
-
-  this._postsView.addPosts(messages);
 };
