@@ -10,7 +10,7 @@ var dbPromise = idb.open('test-db', 4, function (upgradeDb) {
         keyPath: 'name'
       });
     case 2:
-      let peopleStore = upgradeDb.transaction.objectStore('people');
+      var peopleStore = upgradeDb.transaction.objectStore('people');
       peopleStore.createIndex('animal', 'favoriteAnimal');
     case 3:
       // TODO: create an index on 'people' named 'age', ordered by 'age'
