@@ -148,7 +148,7 @@ IndexController.prototype._onSocketMessage = function (data) {
     // object store.
     var tx = db.transaction('wittrs', 'readwrite');
     var wittrsStore = tx.objectStore('wittrs');
-    messages.forEach(function (message) {
+    messages.forEach(message => {
       wittrsStore.put(message);
     });
   });
