@@ -17,7 +17,9 @@ function openDatabase() {
   return idb.open('wittr', 1, function (upgradeDb) {
     switch (upgradeDb.oldVersion) {
       case 0:
-        var wittrs = upgradeDb.createObjectStore('wittrs');
+        var wittrs = upgradeDb.createObjectStore('wittrs', {
+          keyPath: 'id'
+        });
         wittrs.createIndex('by-date', 'time');
     }
   });
@@ -144,14 +146,11 @@ IndexController.prototype._onSocketMessage = function (data) {
 
     // TODO: put each message into the 'wittrs'
     // object store.
-    var tx = db.transaction('wittr', 'readwrite');
+    var tx = db.transaction('wittrs', 'readwrite');
     var wittrsStore = tx.objectStore('wittrs');
-    wittrsStore.put({
-      name: 'Lillie Wolfe',
-      age: 28,
-      favoriteAnimal: 'dog'
-    }, "pippo");
-    return tx.complete;
+    messages.forEach(function (message) {
+      wittrsStore.put(message);
+    });
   });
 
   this._postsView.addPosts(messages);
